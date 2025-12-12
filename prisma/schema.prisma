@@ -94,6 +94,7 @@ model Focus  {
   startTime DateTime
   endTime DateTime
   phases FocusPhase[]
+  createdAt DateTime @default(now())
 
   user_id Int
 

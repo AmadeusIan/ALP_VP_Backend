@@ -1,4 +1,4 @@
-import { Money } from "../../generated/prisma";
+import { Money } from "../../generated/prisma/client";
 
 // Request untuk membuat money record
 export interface CreateMoneyRequest {

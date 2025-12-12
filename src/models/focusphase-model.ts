@@ -1,4 +1,4 @@
-import { FocusPhase } from "../../generated/prisma";
+import { FocusPhase } from "../../generated/prisma/client";
 
 // Request untuk membuat FocusPhase
 export interface CreateFocusPhaseRequest {

@@ -35,6 +35,17 @@ export class FocusPhaseService {
         return toFocusPhaseResponse(phase);
     }
 
+    // ====================
+    // GET FocusPhases by Focus ID
+    // ====================
+    static async getByFocusId(focus_id: number): Promise<FocusPhaseResponse[]> {
+        const phases = await prismaClient.focusPhase.findMany({
+            where: { focus_id },
+        });
+        return phases.map((phase) => toFocusPhaseResponse(phase));
+    }
+
+
     // =========================
     // CREATE FocusPhase
     // =========================
