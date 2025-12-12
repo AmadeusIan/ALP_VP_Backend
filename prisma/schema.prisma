@@ -22,13 +22,13 @@ model User {
   email    String @unique @db.VarChar(150)
   password String @db.VarChar(100)
 
-  goal_id Int
-
   tasks Task[]
   activitys Activity[]
-  moneys MoneyInOut[]
+  moneys Money[]
   dailyGoals DailyTarget[]
   focus Focus[]
+  schedules Schedule[]
+  goals Goal[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -43,7 +43,7 @@ model Task {
   title       String @db.VarChar(100)
   description String @db.Text
   priority    String @db.VarChar(10)
-  due_date    DateTime @db.VarChar(100)
+  due_date    DateTime 
   status      String @db.VarChar(20)
 
 
@@ -61,7 +61,7 @@ model Activity {
   title       String @db.VarChar(100)
   description String @db.Text
   priority    String @db.VarChar(10)
-  due_date    String @db.VarChar(100)
+  due_date    String 
   status      String @db.VarChar(20)
   schedule Schedule[]
 
@@ -74,17 +74,17 @@ model Activity {
 
 
 //Sudah
-model MoneyInOut {
+model Money{
   id          Int    @id @default(autoincrement())
   title       String @db.VarChar(100)
   description String @db.Text
-  Amount Int 
-  Type Boolean
-  cratedAt DateTime @default(now())
+  amount Int 
+  type String @db.VarChar(20) //Income atau Outcome
+  createdAt DateTime @default(now())
   user_id Int
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@map("moneyinouts")
+  @@map("moneys")
 }
 
 
@@ -101,6 +101,7 @@ model Focus  {
 
   @@map("focus")
 }
+
 //Sudah
 model FocusPhase {
   id Int @id @default(autoincrement())
@@ -110,6 +111,7 @@ model FocusPhase {
   duration Int
   @@map("focusphases")
 }
+
 //Sudah
 model DailyTarget {
   id Int @id @default(autoincrement())
@@ -144,11 +146,7 @@ model Goal{
 //Belum
 model Schedule {
   id          Int    @id @default(autoincrement())
-  title       String @db.VarChar(100)
-  description String @db.Text
-  priority    String @db.VarChar(10)
-  due_date    String @db.VarChar(100)
-  status      String @db.VarChar(20)
+
   activity Activity @relation(fields:[activity_id], references: [id])
   activity_id Int
   task Task @relation(fields:[task_id], references: [id])
