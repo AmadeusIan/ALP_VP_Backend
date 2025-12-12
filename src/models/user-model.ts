@@ -43,7 +43,7 @@ export function toUserResponse(
                 username,
                 email,
             },
-            "1h"
+            "7d"
         ),
         id,
         username,

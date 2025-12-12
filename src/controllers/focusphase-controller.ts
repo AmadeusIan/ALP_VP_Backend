@@ -30,6 +30,19 @@ export class FocusPhaseController {
   }
 
   // =========================
+  // GET BY FOCUS ID
+  // =========================
+  static async getByFocusId(req: Request, res: Response) {
+    try {
+      const focus_id = Number(req.params.focus_id);
+      const data = await FocusPhaseService.getByFocusId(focus_id);
+      res.status(200).json({ success: true, data });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  // =========================
   // CREATE
   // =========================
   static async create(req: Request, res: Response) {

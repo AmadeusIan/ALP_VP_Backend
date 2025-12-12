@@ -25,6 +25,7 @@ privateRouter.delete("/focus/:id", FocusController.delete);
 
 privateRouter.get("/focusphase", FocusPhaseController.getAll);
 privateRouter.get("/focusphase/:id", FocusPhaseController.getOne);
+privateRouter.get("/focusphase/focus/:focus_id", FocusPhaseController.getByFocusId);
 privateRouter.post("/focusphase", FocusPhaseController.create);
 privateRouter.patch("/focusphase/:id", FocusPhaseController.update);
 privateRouter.delete("/focusphase/:id", FocusPhaseController.delete);
