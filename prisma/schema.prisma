@@ -22,8 +22,6 @@ model User {
   email    String @unique @db.VarChar(150)
   password String @db.VarChar(100)
 
-  goal_id Int
-
   tasks Task[]
   activitys Activity[]
   moneys Money[]
