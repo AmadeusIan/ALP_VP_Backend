@@ -1,4 +1,4 @@
-
+import { Money } from "../../generated/prisma";
 
 // Request untuk membuat money record
 export interface CreateMoneyRequest {
@@ -29,7 +29,7 @@ export interface MoneyResponse {
 }
 
 // Konversi Prisma result → MoneyResponse
-export function toMoneyResponse(money: any): MoneyResponse {
+export function toMoneyResponse(money: Money): MoneyResponse {
     return {
         id: money.id,
         title: money.title,
