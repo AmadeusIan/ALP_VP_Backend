@@ -1,4 +1,4 @@
-import { Focus } from "../../generated/prisma";
+import { Focus } from "../../generated/prisma/client";
 
 // Request untuk membuat Focus record
 export interface CreateFocusRequest {

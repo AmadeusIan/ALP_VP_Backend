@@ -10,23 +10,23 @@ export const privateRouter = express.Router()
 
 privateRouter.use(authMiddleware)
 
-privateRouter.get("/", MoneyController.getAll);
-privateRouter.get("/:id", MoneyController.getOne);
-privateRouter.post("/", MoneyController.create);
-privateRouter.patch("/:id", MoneyController.update);
-privateRouter.delete("/:id", MoneyController.delete);
+privateRouter.get("/money", MoneyController.getAll);
+privateRouter.get("/money/:id", MoneyController.getOne);
+privateRouter.post("/money/", MoneyController.create);
+privateRouter.patch("/money/:id", MoneyController.update);
+privateRouter.delete("/money/:id", MoneyController.delete);
 
 
-privateRouter.get("/", FocusController.getAll);
-privateRouter.get("/:id", FocusController.getOne);
-privateRouter.post("/", FocusController.create);
-privateRouter.patch("/:id", FocusController.update);
-privateRouter.delete("/:id", FocusController.delete);
+privateRouter.get("/focus", FocusController.getAll);
+privateRouter.get("/focus/:id", FocusController.getOne);
+privateRouter.post("/focus", FocusController.create);
+privateRouter.patch("/focus/:id", FocusController.update);
+privateRouter.delete("/focus/:id", FocusController.delete);
 
-privateRouter.get("/", FocusPhaseController.getAll);
-privateRouter.get("/:id", FocusPhaseController.getOne);
-privateRouter.post("/", FocusPhaseController.create);
-privateRouter.patch("/:id", FocusPhaseController.update);
-privateRouter.delete("/:id", FocusPhaseController.delete);
+privateRouter.get("/focusphase", FocusPhaseController.getAll);
+privateRouter.get("/focusphase/:id", FocusPhaseController.getOne);
+privateRouter.post("/focusphase", FocusPhaseController.create);
+privateRouter.patch("/focusphase/:id", FocusPhaseController.update);
+privateRouter.delete("/focusphase/:id", FocusPhaseController.delete);
 
 
