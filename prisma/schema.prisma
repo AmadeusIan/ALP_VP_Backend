@@ -101,6 +101,7 @@ model Focus  {
 
   @@map("focus")
 }
+
 //Sudah
 model FocusPhase {
   id Int @id @default(autoincrement())
@@ -110,6 +111,7 @@ model FocusPhase {
   duration Int
   @@map("focusphases")
 }
+
 //Sudah
 model DailyTarget {
   id Int @id @default(autoincrement())
