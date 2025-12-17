@@ -1,32 +1,33 @@
-import { NextFunction, Response } from "express"
-import { UserRequest } from "../models/user-request-model"
-import { ResponseError } from "../error/response-error"
-import { verifyToken } from "../utils/jwt-util"
 
-export const authMiddleware = (
-    req: UserRequest,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const authHeader = req.headers["authorization"]
-        const token = authHeader && authHeader.split(" ")[1]
+// import { NextFunction, Response } from "express"
+// import { UserRequest } from "../models/user-request-model"
+// import { ResponseError } from "../error/response-error"
+// import { verifyTokenPayload } from "../utils/jwt-util"
 
-        if (!token) {
-            next(new ResponseError(401, "Unauthorized user!"))
-        }
+// export const authMiddleware = (
+//     req: UserRequest,
+//     res: Response,
+//     next: NextFunction
+// ) => {
+//     try {
+//         const authHeader = req.headers["authorization"]
+//         const token = authHeader && authHeader.split(" ")[1]
 
-        const payload = verifyToken(token!)
+//         if (!token) {
+//             next(new ResponseError(401, "Unauthorized user!"))
+//         }
 
-        if (payload) {
-            req.user = payload
-        } else {
-            next(new ResponseError(401, "Unauthorized user!"))
-        }
+//         const payload = verifyTokenPayload(token!)
 
-        next()
-    } catch (error) {
-        next(error)
-    }
-}
+//         if (payload) {
+//             req.user = payload
+//         } else {
+//             next(new ResponseError(401, "Unauthorized user!"))
+//         }
+
+//         next()
+//     } catch (error) {
+//         next(error)
+//     }
+// }
 

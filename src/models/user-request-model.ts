@@ -1,7 +1,9 @@
-import { Request } from "express"; 
-import { UserJWTPayload } from "./user-model";
+// import { Request } from 'express';
 
-
-export interface UserRequest extends Request {
-    user?: UserJWTPayload
-}
+// export interface UserRequest extends Request {
+//   user?: {
+//     id: number;
+//     email: string;
+//     username: string;
+//   };
+// }
