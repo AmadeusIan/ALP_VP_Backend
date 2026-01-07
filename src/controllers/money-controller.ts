@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { MoneyService } from "../services/money-service";
+import { ResponseError } from "../error/response-error";
 
 export class MoneyController {
 
@@ -32,7 +33,7 @@ export class MoneyController {
   // =========================
   // CREATE
   // =========================
-  static async create(req: Request, res: Response) {
+  static async create(req: Request, res: Response , next: NextFunction) {
     try {
       const { title, description, amount, type, user_id } = req.body;
 
@@ -45,8 +46,10 @@ export class MoneyController {
       });
 
       res.status(201).json({ success: true, data });
-    } catch (error: any) {
+    } catch (error: any) { 
       res.status(400).json({ success: false, message: error.message });
+      console.log(error);   // ⬅️ WAJIB di controller
+      next(error);         // ⬅️ Tambahkan ini untuk meneruskan error ke error middleware
     }
   }
 
