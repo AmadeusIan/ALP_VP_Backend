@@ -36,6 +36,17 @@ export class MoneyService {
     }
 
     // =========================
+    // Ambil money by User ID
+    // =========================
+    static async getByUserId(user_id: number): Promise<MoneyResponse[]> {
+        const moneys = await prismaClient.money.findMany({
+            where: { user_id }
+        });
+
+        return moneys.map((money) => toMoneyResponse(money));
+    }
+
+    // =========================
     // CREATE money record
     // =========================
     static async create(request: CreateMoneyRequest): Promise<MoneyResponse> {

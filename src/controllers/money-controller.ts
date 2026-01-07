@@ -31,6 +31,20 @@ export class MoneyController {
   }
 
   // =========================
+  // GET BY USER ID
+  // =========================
+  static async getByUserId(req: Request, res: Response) {
+    try {
+      const user_id = Number(req.params.user_id);
+      const data = await MoneyService.getByUserId(user_id);
+
+      res.status(200).json({ success: true, data });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  // =========================
   // CREATE
   // =========================
   static async create(req: Request, res: Response , next: NextFunction) {

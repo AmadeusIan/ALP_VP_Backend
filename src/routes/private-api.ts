@@ -12,6 +12,7 @@ privateRouter.use(authMiddleware)
 
 privateRouter.get("/money", MoneyController.getAll);
 privateRouter.get("/money/:id", MoneyController.getOne);
+privateRouter.get("/money/user/:user_id", MoneyController.getByUserId);
 privateRouter.post("/money/", MoneyController.create);
 privateRouter.patch("/money/:id", MoneyController.update);
 privateRouter.delete("/money/:id", MoneyController.delete);
