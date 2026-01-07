@@ -1,15 +1,27 @@
 import express from "express"
+<<<<<<< HEAD
+import { authMiddleware } from "../middleware/auth-middlewares"
+import { ActivityController } from "../controller/activity-controller"
+=======
 import { authMiddleware } from "../middlewares/auth-middleware"
 
 import { MoneyController } from "../controllers/money-controller";
 import { FocusController } from "../controllers/focus-controller";
 import { FocusPhaseController } from "../controllers/focusphase-controller";  
 
+>>>>>>> d2d5edaa69b3a28d91f198e90f1bc0b67c7eaf4e
 
 export const privateRouter = express.Router()
 
 privateRouter.use(authMiddleware)
 
+<<<<<<< HEAD
+privateRouter.get("/allAct", ActivityController.getAll)
+privateRouter.get("/activity/:activityId", ActivityController.get)
+privateRouter.post("/activity", ActivityController.create)
+privateRouter.patch("/activity/:activityId", ActivityController.update)
+privateRouter.delete("/activity/:activityId", ActivityController.delete)
+=======
 privateRouter.get("/money", MoneyController.getAll);
 privateRouter.get("/money/:id", MoneyController.getOne);
 privateRouter.get("/money/user/:user_id", MoneyController.getByUserId);
@@ -32,3 +44,4 @@ privateRouter.patch("/focusphase/:id", FocusPhaseController.update);
 privateRouter.delete("/focusphase/:id", FocusPhaseController.delete);
 
 
+>>>>>>> d2d5edaa69b3a28d91f198e90f1bc0b67c7eaf4e

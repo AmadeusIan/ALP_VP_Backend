@@ -22,13 +22,23 @@ model User {
   email    String @unique @db.VarChar(150)
   password String @db.VarChar(100)
 
+<<<<<<< HEAD
+  // goal_id Int
+
+=======
+>>>>>>> d2d5edaa69b3a28d91f198e90f1bc0b67c7eaf4e
   tasks Task[]
   activitys Activity[]
   moneys Money[]
   dailyGoals DailyTarget[]
   focus Focus[]
+<<<<<<< HEAD
+  goals Goal[]
+  schedules Schedule[]
+=======
   schedules Schedule[]
   goals Goal[]
+>>>>>>> d2d5edaa69b3a28d91f198e90f1bc0b67c7eaf4e
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -43,7 +53,11 @@ model Task {
   title       String @db.VarChar(100)
   description String @db.Text
   priority    String @db.VarChar(10)
+<<<<<<< HEAD
+  due_date    String @db.VarChar(100)
+=======
   due_date    DateTime 
+>>>>>>> d2d5edaa69b3a28d91f198e90f1bc0b67c7eaf4e
   status      String @db.VarChar(20)
 
 
@@ -60,9 +74,16 @@ model Activity {
   id          Int    @id @default(autoincrement())
   title       String @db.VarChar(100)
   description String @db.Text
+<<<<<<< HEAD
+  start_date  String @db.VarChar(100)
+  end_date    String @db.VarChar(100)
+  start_time  String @db.VarChar(100)
+  end_time    String @db.VarChar(100)
+=======
   priority    String @db.VarChar(10)
   due_date    String 
   status      String @db.VarChar(20)
+>>>>>>> d2d5edaa69b3a28d91f198e90f1bc0b67c7eaf4e
   schedule Schedule[]
 
   user_id Int
