@@ -1,70 +1,76 @@
-// src/services/summary-service.ts (VERSI REVISI)
+import { PrismaClient } from "@prisma/client";
 
-import prisma from '../lib/prisma';
+const prisma = new PrismaClient();
 
 class SummaryService {
-    async getAppSummary() {
+    async getAppSummary(userId: number) {
         try {
-            // FindMany() akan mengembalikan [] jika tidak ada data, yang aman.
-            const allTasks = await prisma.task.findMany();
-            const allActivities = await prisma.activity.findMany();
+            const allTasks = await prisma.task.findMany({ where: { user_id: userId } });
+            const allActivities = await prisma.activity.findMany({ where: { user_id: userId } });
             
             const totalItems = allTasks.length + allActivities.length;
-            const completedTasks = allTasks.filter(t => t.isCompleted).length;
-            const completedActivities = allActivities.filter(a => a.isCompleted).length;
-            const totalCompleted = completedTasks + completedActivities;
+            const completedTasks = allTasks.filter(t => t.status === "Done" || t.status === "Completed").length;
+            const completedActivities = 0; 
 
-            // Pastikan pembagian dihindari jika totalItems adalah 0
+            const totalCompleted = completedTasks + completedActivities;
             const percentage = totalItems > 0 ? Math.round((totalCompleted / totalItems) * 100) : 0;
             
             return {
                 todayAlmostDonePercentage: percentage
             };
         } catch (error) {
-            // Log error untuk debugging di server
-            console.error("SERVICE ERROR: Gagal menghitung Summary:", error);
-            // Lempar error agar controller bisa merespons dengan 500 Internal Server Error
-            throw new Error("Gagal memproses Summary data.");
+            console.error("SERVICE ERROR: Summary failed:", error);
+            throw new Error("Gagal memproses Summary.");
         }
     }
 
-    async getAllItems() {
+    async getAllItems(userId: number) {
         try {
-            // FindMany() akan mengembalikan [] jika tidak ada data, yang aman.
-            const tasks = await prisma.task.findMany({ orderBy: { createdAt: 'desc' } });
-            const activities = await prisma.activity.findMany({ orderBy: { createdAt: 'desc' } });
+            // GANTI: orderBy createdAt -> id
+            const tasks = await prisma.task.findMany({ 
+                where: { user_id: userId },
+                orderBy: { id: 'desc' } 
+            });
+            // GANTI: orderBy createdAt -> id
+            const activities = await prisma.activity.findMany({ 
+                where: { user_id: userId },
+                orderBy: { id: 'desc' } 
+            });
 
-            // Gabungkan dan konversi waktu output
             const combinedItems = [
                 ...tasks.map(t => ({ 
                     ...t, 
                     type: 'Task', 
-                    // Konversi ke ISOString hanya jika ada nilai (safeguard)
-                    dateTime: t.dateTime ? t.dateTime.toISOString() : null,
+                    dateTime: t.due_date ? t.due_date.toISOString() : null,
+                    isCompleted: t.status === "Done",
                     startDateTime: null, 
                     endDateTime: null, 
                 })),
                 ...activities.map(a => ({ 
                     ...a, 
                     type: 'Activity', 
-                    // Konversi ke ISOString hanya jika ada nilai (safeguard)
                     dateTime: a.startDateTime ? a.startDateTime.toISOString() : null, 
                     startDateTime: a.startDateTime ? a.startDateTime.toISOString() : null,
                     endDateTime: a.endDateTime ? a.endDateTime.toISOString() : null,
                 }))
             ];
             
-            // Urutkan berdasarkan createdAt terbaru
-            combinedItems.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            // GANTI LOGIC SORTING AKHIR
+            // Karena tidak ada createdAt, kita urutkan berdasarkan dateTime (Jadwal terdekat di atas)
+            combinedItems.sort((a, b) => {
+                const dateA = a.dateTime ? new Date(a.dateTime).getTime() : 0;
+                const dateB = b.dateTime ? new Date(b.dateTime).getTime() : 0;
+                // Urutkan dari yang paling baru (masa depan) ke lama, atau sebaliknya.
+                // Ini logic: Yang paling baru dibuat (biasanya ID besar) atau yang deadline-nya paling dekat?
+                // Kita pakai logic ID saja biar konsisten "Versi Malas" (ID Besar = Paling atas)
+                return b.id - a.id; 
+            });
 
-            // Jika kosong, mengembalikan []
             return combinedItems;
 
         } catch (error) {
-            // Log error untuk debugging di server
-            console.error("SERVICE ERROR: Gagal mengambil semua item:", error);
-            // Lempar error agar controller bisa merespons dengan 500 Internal Server Error
-            throw new Error("Gagal mengambil data dari database.");
+            console.error("SERVICE ERROR: Get All Items failed:", error);
+            throw new Error("Gagal mengambil data.");
         }
     }
 }

@@ -1,6 +1,9 @@
-// prisma/schema.prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" // WAJIB ada "-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -8,39 +11,163 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// =======================
+// USER
+// =======================
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @db.VarChar(100)
+  email    String @unique @db.VarChar(150)
+  password String @db.VarChar(100)
+
+  // Relations
+  tasks       Task[]
+  activitys   Activity[]
+  moneys      Money[]
+  dailyGoals  DailyTarget[]
+  focus       Focus[]
+  schedules   Schedule[]
+  goals       Goal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// =======================
+// TASK (Ada Difficulty)
+// =======================
 model Task {
-  id          String     @id @default(uuid())
-  title       String
-  description String?
-  dateTime    DateTime?  // Dapat berupa null, sehingga field di Kotlin harus opsional
-  isCompleted Boolean    @default(false)
-  difficulty  Difficulty @default(None)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(100)
+  description String   @db.Text
+  
+  // Field penting yang diminta
+  difficulty  String   @db.VarChar(20) // Easy, Medium, Hard
+  priority    String   @db.VarChar(10) // High, Low
+  
+  due_date    DateTime
+  status      String   @db.VarChar(20) // ToDo, Done
+
+  // Relations
+  user_id     Int
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
+  schedule    Schedule[]
+
+  @@map("tasks")
 }
 
-// prisma/schema.prisma
-// ...
-
+// =======================
+// ACTIVITY (Ada Start/End Time)
+// =======================
 model Activity {
-  id          String    @id @default(uuid())
-  title       String
-  description String?
+  id            Int      @id @default(autoincrement())
+  title         String   @db.VarChar(100)
+  description   String   @db.Text
+  
+  // Activity pakai durasi waktu, bukan cuma due_date
+  startDateTime DateTime
+  endDateTime   DateTime
+  
+  // Relations
+  user_id       Int
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
+  schedule      Schedule[]
 
-  // PERUBAHAN UTAMA DI SINI
-  startDateTime DateTime? // Waktu Mulai
-  endDateTime   DateTime? // Waktu Akhir
-
-  isCompleted Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  @@map("activitys")
 }
 
-// ...
+// =======================
+// MONEY
+// =======================
+model Money {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(100)
+  description String   @db.Text
+  amount      Int 
+  type        String   @db.VarChar(20) // Income atau Outcome
+  createdAt   DateTime @default(now())
+  
+  user_id     Int
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-enum Difficulty {
-  Easy
-  Medium
-  Hard
-  None
+  @@map("moneys")
+}
+
+// =======================
+// FOCUS
+// =======================
+model Focus {
+  id          Int      @id @default(autoincrement())
+  startTime   DateTime
+  endTime     DateTime
+  phases      FocusPhase[]
+  createdAt   DateTime @default(now())
+
+  user_id     Int
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("focus")
+}
+
+model FocusPhase {
+  id        Int    @id @default(autoincrement())
+  focus_id  Int
+  focus     Focus  @relation(fields: [focus_id], references: [id], onDelete: Cascade)
+  type      String @db.VarChar(30) // Focus atau Break
+  duration  Int
+  
+  @@map("focusphases")
+}
+
+// =======================
+// TARGETS & GOALS
+// =======================
+model DailyTarget {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  date      DateTime
+  focusGoal Int
+  taskGoal  Int
+  createdAt DateTime @default(now())
+
+  @@unique([user_id, date])
+  @@map("dailytargets")
+}
+
+model Goal {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(100)
+  description String?
+  progress    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  complatedAt DateTime?
+
+  user_id     Int
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("goals")
+}
+
+// =======================
+// SCHEDULE (Updated)
+// =======================
+model Schedule {
+  id          Int  @id @default(autoincrement())
+
+  // Dibuat Optional (?) agar jadwal bisa diisi Task SAJA atau Activity SAJA
+  activity_id Int?
+  activity    Activity? @relation(fields: [activity_id], references: [id])
+  
+  task_id     Int?
+  task        Task?     @relation(fields: [task_id], references: [id])
+
+  user_id     Int
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("schedules")
 }
