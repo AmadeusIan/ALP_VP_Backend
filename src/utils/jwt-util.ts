@@ -14,4 +14,9 @@ export const generateToken = (
 
 export const verifyToken = (token: string): UserJWTPayload => {
     return jwt.verify(token, JWT_SECRET_KEY || "secret_key") as UserJWTPayload
+<<<<<<< HEAD
 }
+=======
+}
+
+>>>>>>> d2d5edaa69b3a28d91f198e90f1bc0b67c7eaf4e
