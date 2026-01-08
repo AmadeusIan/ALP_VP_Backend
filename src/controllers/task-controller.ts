@@ -56,7 +56,7 @@ const taskController = {
                 dateTime: updatedTask.due_date ? updatedTask.due_date.toISOString() : null 
             });
         } catch (error: any) {
-             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+             if (error && error.code === 'P2025') {
                 return res.status(404).json({ error: 'Task tidak ditemukan.' });
             }
             if (error.name === 'ZodError') {
@@ -73,7 +73,7 @@ const taskController = {
             await taskService.deleteTask(taskId);
             res.status(204).send(); 
         } catch (error: any) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+            if (error && error.code === 'P2025') {
                 return res.status(404).json({ error: 'Task tidak ditemukan.' });
             }
             res.status(500).json({ error: 'Gagal menghapus Task.' });
