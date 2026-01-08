@@ -4,7 +4,6 @@ CREATE TABLE "users" (
     "username" VARCHAR(100) NOT NULL,
     "email" VARCHAR(150) NOT NULL,
     "password" VARCHAR(100) NOT NULL,
-    "goal_id" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -29,12 +28,23 @@ CREATE TABLE "activitys" (
     "id" SERIAL NOT NULL,
     "title" VARCHAR(100) NOT NULL,
     "description" TEXT NOT NULL,
-    "priority" VARCHAR(10) NOT NULL,
-    "due_date" TEXT NOT NULL,
-    "status" VARCHAR(20) NOT NULL,
+    "start_date" VARCHAR(100) NOT NULL,
+    "end_date" VARCHAR(100) NOT NULL,
+    "start_time" VARCHAR(100) NOT NULL,
+    "end_time" VARCHAR(100) NOT NULL,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "activitys_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "money_categories" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "budget" INTEGER NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+
+    CONSTRAINT "money_categories_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -42,9 +52,10 @@ CREATE TABLE "moneys" (
     "id" SERIAL NOT NULL,
     "title" VARCHAR(100) NOT NULL,
     "description" TEXT NOT NULL,
-    "Amount" INTEGER NOT NULL,
-    "Type" VARCHAR(20) NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "type" VARCHAR(20) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "category_id" INTEGER,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "moneys_pkey" PRIMARY KEY ("id")
@@ -55,6 +66,7 @@ CREATE TABLE "focus" (
     "id" SERIAL NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL,
     "endTime" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "focus_pkey" PRIMARY KEY ("id")
@@ -83,19 +95,6 @@ CREATE TABLE "dailytargets" (
 );
 
 -- CreateTable
-CREATE TABLE "goals" (
-    "id" SERIAL NOT NULL,
-    "title" VARCHAR(100) NOT NULL,
-    "description" TEXT,
-    "progress" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "complatedAt" TIMESTAMP(3),
-    "user_id" INTEGER NOT NULL,
-
-    CONSTRAINT "goals_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "schedules" (
     "id" SERIAL NOT NULL,
     "activity_id" INTEGER NOT NULL,
@@ -118,6 +117,12 @@ ALTER TABLE "tasks" ADD CONSTRAINT "tasks_user_id_fkey" FOREIGN KEY ("user_id") 
 ALTER TABLE "activitys" ADD CONSTRAINT "activitys_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "money_categories" ADD CONSTRAINT "money_categories_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "moneys" ADD CONSTRAINT "moneys_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "money_categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "moneys" ADD CONSTRAINT "moneys_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -128,9 +133,6 @@ ALTER TABLE "focusphases" ADD CONSTRAINT "focusphases_focus_id_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "dailytargets" ADD CONSTRAINT "dailytargets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "goals" ADD CONSTRAINT "goals_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "schedules" ADD CONSTRAINT "schedules_activity_id_fkey" FOREIGN KEY ("activity_id") REFERENCES "activitys"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

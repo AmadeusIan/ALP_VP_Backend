@@ -1,7 +1,22 @@
 import { Request, Response, NextFunction } from "express";
 import { MoneyService } from "../services/money-service";
+import { ResponseError } from "../error/response-error";
 
 export class MoneyController {
+  // =========================
+  // FILTER BY DATE (day/week/month)
+  // =========================
+  static async filterByDate(req: Request, res: Response) {
+    try {
+      const user_id = Number(req.query.user_id);
+      const type = String(req.query.type) as 'day' | 'week' | 'month';
+      const date = req.query.date ? new Date(String(req.query.date)) : new Date();
+      const data = await MoneyService.filterByDate({ user_id, type, date });
+      res.status(200).json({ success: true, data });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
 
   // =========================
   // GET ALL
@@ -30,9 +45,23 @@ export class MoneyController {
   }
 
   // =========================
+  // GET BY USER ID
+  // =========================
+  static async getByUserId(req: Request, res: Response) {
+    try {
+      const user_id = Number(req.params.user_id);
+      const data = await MoneyService.getByUserId(user_id);
+
+      res.status(200).json({ success: true, data });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  // =========================
   // CREATE
   // =========================
-  static async create(req: Request, res: Response) {
+  static async create(req: Request, res: Response , next: NextFunction) {
     try {
       const { title, description, amount, type, user_id } = req.body;
 
@@ -45,8 +74,10 @@ export class MoneyController {
       });
 
       res.status(201).json({ success: true, data });
-    } catch (error: any) {
+    } catch (error: any) { 
       res.status(400).json({ success: false, message: error.message });
+      console.log(error);   // ⬅️ WAJIB di controller
+      next(error);         // ⬅️ Tambahkan ini untuk meneruskan error ke error middleware
     }
   }
 

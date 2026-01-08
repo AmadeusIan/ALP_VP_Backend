@@ -1,20 +1,41 @@
 import express from "express"
 import { authMiddleware } from "../middlewares/auth-middleware"
+import { ActivityController } from "../controllers/activity-controller"
+import { MoneyController } from "../controllers/money-controller"
+import { FocusController } from "../controllers/focus-controller"
 
-import { MoneyController } from "../controllers/money-controller";
-import { FocusController } from "../controllers/focus-controller";
-import { FocusPhaseController } from "../controllers/focusphase-controller";  
+import { FocusPhaseController } from "../controllers/focusphase-controller"
+import { CategoryController } from "../controllers/category-controller"
+import { UserController } from "../controllers/user-controller"
+
 
 
 export const privateRouter = express.Router()
 
+privateRouter.get("/user", UserController.getAllUser);
 privateRouter.use(authMiddleware)
+
+privateRouter.get("/allAct", ActivityController.getAll)
+privateRouter.get("/activity/:activityId", ActivityController.get)
+privateRouter.post("/activity", ActivityController.create)
+privateRouter.patch("/activity/:activityId", ActivityController.update)
+privateRouter.delete("/activity/:activityId", ActivityController.delete)
 
 privateRouter.get("/money", MoneyController.getAll);
 privateRouter.get("/money/:id", MoneyController.getOne);
+privateRouter.get("/money/user/:user_id", MoneyController.getByUserId);
 privateRouter.post("/money/", MoneyController.create);
 privateRouter.patch("/money/:id", MoneyController.update);
 privateRouter.delete("/money/:id", MoneyController.delete);
+privateRouter.get("/money/filter", MoneyController.filterByDate);
+
+privateRouter.get("/category", CategoryController.getAll);
+privateRouter.get("/category/:id", CategoryController.getOne);
+privateRouter.get("/category/user/:user_id", CategoryController.getByUserId);
+privateRouter.post("/category", CategoryController.create);
+privateRouter.patch("/category/:id", CategoryController.update);
+privateRouter.delete("/category/:id", CategoryController.delete);
+privateRouter.get("/category/filter", CategoryController.filterByUserMonthCategory);
 
 
 privateRouter.get("/focus", FocusController.getAll);
