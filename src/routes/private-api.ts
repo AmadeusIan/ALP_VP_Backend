@@ -1,6 +1,6 @@
 import express from "express"
 import { authMiddleware } from "../middlewares/auth-middleware"
-import { ActivityController } from "../controllers/activity-controller"
+import { ActivityController } from "../controllers/activiti-controller"
 import { MoneyController } from "../controllers/money-controller"
 import { FocusController } from "../controllers/focus-controller"
 
@@ -8,6 +8,9 @@ import { FocusPhaseController } from "../controllers/focusphase-controller"
 import { CategoryController } from "../controllers/category-controller"
 import { UserController } from "../controllers/user-controller"
 
+import summaryController from "../controllers/summary-controller";
+import taskController from "../controllers/task-controller";
+import activityController from "../controllers/activity-controller";
 
 
 export const privateRouter = express.Router()
@@ -50,5 +53,21 @@ privateRouter.get("/focusphase/focus/:focus_id", FocusPhaseController.getByFocus
 privateRouter.post("/focusphase", FocusPhaseController.create);
 privateRouter.patch("/focusphase/:id", FocusPhaseController.update);
 privateRouter.delete("/focusphase/:id", FocusPhaseController.delete);
+
+privateRouter.get('/summary', summaryController.getSummary); 
+privateRouter.get('/all', summaryController.getAllItems); 
+
+privateRouter.get('/tasks', taskController.getAllTasks); 
+privateRouter.post('/tasks', taskController.createTask);
+privateRouter.put('/tasks/:id', taskController.updateTask);
+privateRouter.delete('/tasks/:id', taskController.deleteTask);
+
+// --- Activity CRUD Routes ---
+privateRouter.get('/activities', activityController.getAllActivities); 
+privateRouter.post('/activities', activityController.createActivity);
+privateRouter.put('/activities/:id', activityController.updateActivity);
+privateRouter.delete('/activities/:id', activityController.deleteActivity);
+
+
 
 

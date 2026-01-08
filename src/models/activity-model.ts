@@ -1,36 +1,26 @@
-import { Activity } from "../../generated/prisma/client"
+// src/models/activity-model.ts
+import { z } from 'zod';
 
+// Skema untuk membuat Activity baru
+export const createActivitySchema = z.object({
+    title: z.string().min(1, "Judul Activity wajib diisi."),
+    // Description boleh null atau tidak diisi
+    description: z.string().nullable().optional(), 
+    
+    // WAJIB DIISI: String ISO datetime dari Frontend (validasi datetime)
+    startDateTime: z.string().datetime({ message: "Format tanggal mulai tidak valid (Harus ISO 8601)." }), 
+    endDateTime: z.string().datetime({ message: "Format tanggal selesai tidak valid (Harus ISO 8601)." }), 
+});
 
-export interface ActivityResponse {
-    id: number
-    title: string
-    description: string
-    start_date: string
-    end_date: string
-    start_time: string
-    end_time: string
-}
+// Skema untuk update Activity (Partial = semua jadi optional)
+export const updateActivitySchema = z.object({
+    title: z.string().min(1).optional(),
+    description: z.string().nullable().optional(),
+    startDateTime: z.string().datetime().nullable().optional(),
+    endDateTime: z.string().datetime().nullable().optional(),
+    isCompleted: z.boolean().optional(),
+});
 
-export interface ActivityCreateUpdateRequest {
-    title: string
-    description: string
-    start_date: string
-    end_date: string
-    start_time: string
-    end_time: string
-}
-
-export function toActivityResponse(activity: Activity) : ActivityResponse {
-    return {
-        id: activity.id,
-        title: activity.title,
-        description: activity.description,
-        start_date: activity.start_date,
-        end_date: activity.end_date,
-        start_time: activity.start_time,
-        end_time: activity.end_time,
-    }
-}
-
-export const toActivityResponseArray = (activities: Activity[]): ActivityResponse[] => 
-    activities.map(toActivityResponse)
+// PENTING: Nama type disamakan dengan yang di-import di Service tadi
+export type CreateActivityInput = z.infer<typeof createActivitySchema>;
+export type UpdateActivityInput = z.infer<typeof updateActivitySchema>;

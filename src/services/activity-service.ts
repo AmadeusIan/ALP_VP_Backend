@@ -1,85 +1,68 @@
+// src/services/activity-service.ts
+import { PrismaClient } from "@prisma/client";
+import { CreateActivityInput, UpdateActivityInput } from "../models/activity-model";
 
-import { Activity } from "../../generated/prisma/client"
-import { ResponseError } from "../error/response-error"
-import { ActivityResponse, ActivityCreateUpdateRequest, toActivityResponse, toActivityResponseArray } from "../models/activity-model"
-import { prismaClient } from "../utils/database-util"
-import { ActivityValidation } from "../validations/activity_validation"
-import { Validation } from "../validations/validation"
+const prisma = new PrismaClient();
 
-export class ActivityService {
-
-    static async getActivity(activityId: number): Promise<ActivityResponse> {
-        const activity = await prismaClient.activity.findUnique({
-            where: { id: activityId }
-        })
-        if (!activity) {
-            throw new ResponseError(404, "Activity not found!")
-        }
-        return toActivityResponse(activity)
-    }
-
-    static async getAllActivities(): Promise<ActivityResponse[]> {
-        const activities = await prismaClient.activity.findMany()
-        return activities.map((activity: Activity) => toActivityResponse(activity))
-    }
-
-    static async createActivity(user_id: number, reqData: ActivityCreateUpdateRequest): Promise<string> {
-        const validatedData = Validation.validate(
-            ActivityValidation.CREATE_UPDATE,
-            reqData
-        )
-
-        // await prismaClient.activity.create({
-        //     // data: {
-        //     //     title: validatedData.title,
-        //     //     description: validatedData.description,
-        //     //     // start_time: validatedData.start_time,
-        //     //     // end_time: validatedData.end_time,
-        //     //     user_id: user_id,
-        //     // },
-        // })
-
-        return "Activity created!"
-    }
-
-    static async updateActivity(activityId: number, req: ActivityCreateUpdateRequest): Promise<string> {
-        const validatedData = Validation.validate(
-            ActivityValidation.CREATE_UPDATE,
-            req
-        )
-
-        const activity = await prismaClient.activity.findUnique({
-            where: { id: activityId }
-        })
-        if (!activity) {
-            throw new ResponseError(404, "Activity not found!")
-        }
-
-        await prismaClient.activity.update({
-            where: { id: activityId },
+const activityService = {
+    // 1. CREATE
+    async createActivity(data: CreateActivityInput, userId: number) {
+        return await prisma.activity.create({
             data: {
-                title: validatedData.title,
-                description: validatedData.description,
-                // start_time: validatedData.start_time,
-                // end_time: validatedData.end_time,
+                title: data.title,
+                // FIX: Jika null/undefined, ubah jadi string kosong ""
+                description: data.description ?? "", 
+                
+                // Konversi string ISO ke Date Object
+                startDateTime: new Date(data.startDateTime),
+                endDateTime: new Date(data.endDateTime),
+                
+                // Hubungkan ke User
+                user: {
+                    connect: {
+                        id: userId 
+                    }
+                }
+            }
+        });
+    },
+    
+    // 2. UPDATE
+    async updateActivity(id: number, data: UpdateActivityInput) {
+        return await prisma.activity.update({
+            where: { id: id },
+            data: {
+                title: data.title,
+                
+                // FIX UTAMA DISINI: 
+                // Prisma tolak 'null' untuk kolom required.
+                // Logika: Jika ada isinya pakai itu, jika null/undefined jangan di-update (undefined)
+                description: data.description ? data.description : undefined,
+                
+                startDateTime: data.startDateTime ? new Date(data.startDateTime) : undefined,
+                endDateTime: data.endDateTime ? new Date(data.endDateTime) : undefined,
+            }
+        });
+    },
+    
+    // 3. DELETE
+    async deleteActivity(id: number) {
+        return await prisma.activity.delete({
+            where: { id: id }
+        });
+    },
+    
+    // 4. GET ALL
+    async getAllActivities(userId: number) {
+        return await prisma.activity.findMany({
+            where: {
+                user_id: userId 
             },
-        })
-
-        return "Activity updated!"
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
     }
+};
 
-    static async deleteActivity(activityId: number): Promise<string> {
-        const activity = await prismaClient.activity.findUnique({
-            where: { id: activityId }
-        })
-        if (!activity) {
-            throw new ResponseError(404, "Activity not found!")
-        }
-
-        await prismaClient.activity.delete({
-            where: { id: activityId }
-        })
-
-        return "Activity deleted!"
-    }
-}
+export default activityService;
