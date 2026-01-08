@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ActivityCreateUpdateRequest } from "../models/activity-model";
-import { ActivityService } from "../service/activity-service";
+import { ActivityService } from "../services/activity-service";
 
 export class ActivityController {
 

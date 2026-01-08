@@ -29,17 +29,15 @@ export class ActivityService {
             reqData
         )
 
-        await prismaClient.activity.create({
-            data: {
-                title: validatedData.title,
-                description: validatedData.description,
-                start_date: validatedData.start_date,
-                end_date: validatedData.end_date,
-                start_time: validatedData.start_time,
-                end_time: validatedData.end_time,
-                user_id: user_id,
-            },
-        })
+        // await prismaClient.activity.create({
+        //     // data: {
+        //     //     title: validatedData.title,
+        //     //     description: validatedData.description,
+        //     //     // start_time: validatedData.start_time,
+        //     //     // end_time: validatedData.end_time,
+        //     //     user_id: user_id,
+        //     // },
+        // })
 
         return "Activity created!"
     }
@@ -62,10 +60,8 @@ export class ActivityService {
             data: {
                 title: validatedData.title,
                 description: validatedData.description,
-                start_date: validatedData.start_date,
-                end_date: validatedData.end_date,
-                start_time: validatedData.start_time,
-                end_time: validatedData.end_time,
+                // start_time: validatedData.start_time,
+                // end_time: validatedData.end_time,
             },
         })
 
