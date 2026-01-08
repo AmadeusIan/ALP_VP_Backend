@@ -7,6 +7,23 @@ import {
 import { UserService } from "../services/user-service"
 
 export class UserController {
+    static async getAllUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            const users = await UserService.getAllUser();
+            res.status(200).json({ data: users });
+        } catch (error) {
+            next(error);
+        }
+    }
+    static async getUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = Number(req.params.id);
+            const user = await UserService.getUserById(id);
+            res.status(200).json({ data: user });
+        } catch (error) {
+            next(error);
+        }
+    }
     static async register(req: Request, res: Response, next: NextFunction) {
         try {
             const request: RegisterUserRequest = req.body as RegisterUserRequest
