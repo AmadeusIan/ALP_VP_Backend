@@ -6,9 +6,13 @@ import { FocusController } from "../controllers/focus-controller"
 
 import { FocusPhaseController } from "../controllers/focusphase-controller"
 import { CategoryController } from "../controllers/category-controller"
+import { UserController } from "../controllers/user-controller"
+
+
 
 export const privateRouter = express.Router()
 
+privateRouter.get("/user", UserController.getAllUser);
 privateRouter.use(authMiddleware)
 
 privateRouter.get("/allAct", ActivityController.getAll)

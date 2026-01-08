@@ -11,6 +11,17 @@ import { Validation } from "../validations/validation"
 import bcrypt from "bcrypt"
 
 export class UserService {
+    static async getAllUser(): Promise<UserResponse[]> {
+        const users = await prismaClient.user.findMany();
+        return users.map(user => toUserResponse(user.id, user.username, user.email));
+    }
+    static async getUserById(id: number): Promise<UserResponse> {
+        const user = await prismaClient.user.findUnique({ where: { id } });
+        if (!user) {
+            throw new ResponseError(404, "User not found");
+        }
+        return toUserResponse(user.id, user.username, user.email);
+    }
     static async register(request: RegisterUserRequest): Promise<UserResponse> {
         const validatedData = Validation.validate(
             UserValidation.REGISTER,
