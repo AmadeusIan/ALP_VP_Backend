@@ -9,7 +9,7 @@ class SummaryService {
             const allActivities = await prisma.activity.findMany({ where: { user_id: userId } });
             
             const totalItems = allTasks.length + allActivities.length;
-            const completedTasks = allTasks.filter(t => t.status === "Done" || t.status === "Completed").length;
+            const completedTasks = allTasks.filter((t: any) => t.status === "Done" || t.status === "Completed").length;
             const completedActivities = 0; 
 
             const totalCompleted = completedTasks + completedActivities;
@@ -38,7 +38,7 @@ class SummaryService {
             });
 
             const combinedItems = [
-                ...tasks.map(t => ({ 
+                ...tasks.map((t: any) => ({ 
                     ...t, 
                     type: 'Task', 
                     dateTime: t.due_date ? t.due_date.toISOString() : null,
@@ -46,7 +46,7 @@ class SummaryService {
                     startDateTime: null, 
                     endDateTime: null, 
                 })),
-                ...activities.map(a => ({ 
+                ...activities.map((a: any) => ({ 
                     ...a, 
                     type: 'Activity', 
                     dateTime: a.startDateTime ? a.startDateTime.toISOString() : null, 

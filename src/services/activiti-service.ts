@@ -1,5 +1,5 @@
 
-import { Activity } from "../../generated/prisma/client"
+import { Activiti } from "../../generated/prisma/client"
 import { ResponseError } from "../error/response-error"
 import { ActivityResponse, ActivityCreateUpdateRequest, toActivityResponse, toActivityResponseArray } from "../models/activiti-model"
 import { prismaClient } from "../utils/database-util"
@@ -9,7 +9,7 @@ import { Validation } from "../validations/validation"
 export class ActivityService {
 
     static async getActivity(activityId: number): Promise<ActivityResponse> {
-        const activity = await prismaClient.activity.findUnique({
+        const activity = await prismaClient.activiti.findUnique({
             where: { id: activityId }
         })
         if (!activity) {
@@ -19,8 +19,8 @@ export class ActivityService {
     }
 
     static async getAllActivities(): Promise<ActivityResponse[]> {
-        const activities = await prismaClient.activity.findMany()
-        return activities.map((activity: Activity) => toActivityResponse(activity))
+        const activities = await prismaClient.activiti.findMany()
+        return activities.map((activity: Activiti) => toActivityResponse(activity))
     }
 
     static async createActivity(user_id: number, reqData: ActivityCreateUpdateRequest): Promise<string> {
@@ -48,14 +48,14 @@ export class ActivityService {
             req
         )
 
-        const activity = await prismaClient.activity.findUnique({
+        const activity = await prismaClient.activiti.findUnique({
             where: { id: activityId }
         })
         if (!activity) {
             throw new ResponseError(404, "Activity not found!")
         }
 
-        await prismaClient.activity.update({
+        await prismaClient.activiti.update({
             where: { id: activityId },
             data: {
                 title: validatedData.title,
@@ -69,7 +69,7 @@ export class ActivityService {
     }
 
     static async deleteActivity(activityId: number): Promise<string> {
-        const activity = await prismaClient.activity.findUnique({
+        const activity = await prismaClient.activiti.findUnique({
             where: { id: activityId }
         })
         if (!activity) {

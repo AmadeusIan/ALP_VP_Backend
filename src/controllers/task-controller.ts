@@ -88,7 +88,7 @@ const taskController = {
             // 4. Ambil Task milik User ID ini saja
             const tasks = await taskService.getAllTasks(userId);
             
-            const formattedTasks = tasks.map(t => ({
+            const formattedTasks = tasks.map((t: typeof tasks[number]) => ({
                 ...t,
                 type: 'Task',
                 // Map due_date DB ke dateTime Frontend

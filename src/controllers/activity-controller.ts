@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import activityService from '../services/activity-service';
 import { createActivitySchema, updateActivitySchema } from '../models/activity-model';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';    
 
 // Interface bantuan biar TypeScript tau req.user itu ada
 interface AuthRequest extends Request {
@@ -100,7 +100,7 @@ const activityController = {
             // Kirim userId ke service
             const activities = await activityService.getAllActivities(userId);
             
-            const formattedActivities = activities.map(a => ({
+            const formattedActivities = activities.map((a: typeof activities[number]) => ({
                 ...a,
                 type: 'Activity',
                 startDateTime: a.startDateTime ? new Date(a.startDateTime).toISOString() : null,

@@ -1,4 +1,5 @@
-import { Activity } from "../../generated/prisma/client"
+
+import { Activiti} from "@prisma/client"
 
 
 export interface ActivityResponse {
@@ -20,7 +21,7 @@ export interface ActivityCreateUpdateRequest {
     end_time: string
 }
 
-export function toActivityResponse(activity: Activity) : ActivityResponse {
+export function toActivityResponse(activity: Activiti) : ActivityResponse {
     return {
         id: activity.id,
         title: activity.title,
@@ -32,5 +33,5 @@ export function toActivityResponse(activity: Activity) : ActivityResponse {
     }
 }
 
-export const toActivityResponseArray = (activities: Activity[]): ActivityResponse[] => 
+export const toActivityResponseArray = (activities: Activiti[]): ActivityResponse[] => 
     activities.map(toActivityResponse)
