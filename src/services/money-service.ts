@@ -10,6 +10,39 @@ import { MoneyValidation } from "../validations/money-validation";
 import { Validation } from "../validations/validation";
 
 export class MoneyService {
+    // =========================
+    // FILTER money by date range (day, week, month)
+    // =========================
+    static async filterByDate({ user_id, type, date }: { user_id: number, type: 'day' | 'week' | 'month', date: Date }): Promise<MoneyResponse[]> {
+        let start: Date, end: Date;
+        const d = new Date(date);
+        if (type === 'day') {
+            start = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            end = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+        } else if (type === 'week') {
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Senin sebagai awal minggu
+            start = new Date(d.setDate(diff));
+            start.setHours(0,0,0,0);
+            end = new Date(start);
+            end.setDate(start.getDate() + 7);
+        } else if (type === 'month') {
+            start = new Date(d.getFullYear(), d.getMonth(), 1);
+            end = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+        } else {
+            throw new ResponseError(400, 'Invalid filter type');
+        }
+        const moneys = await prismaClient.money.findMany({
+            where: {
+                user_id,
+                createdAt: {
+                    gte: start,
+                    lt: end,
+                },
+            },
+        });
+        return moneys.map(toMoneyResponse);
+    }
 
     // =========================
     // Ambil semua money record

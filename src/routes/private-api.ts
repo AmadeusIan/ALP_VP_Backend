@@ -1,5 +1,5 @@
 import express from "express"
-import { authMiddleware } from "../middleware/auth-middlewares"
+import { authMiddleware } from "../middlewares/auth-middleware"
 import { ActivityController } from "../controllers/activity-controller"
 import { MoneyController } from "../controllers/money-controller"
 import { FocusController } from "../controllers/focus-controller"

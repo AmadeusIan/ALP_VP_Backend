@@ -3,6 +3,20 @@ import { MoneyService } from "../services/money-service";
 import { ResponseError } from "../error/response-error";
 
 export class MoneyController {
+  // =========================
+  // FILTER BY DATE (day/week/month)
+  // =========================
+  static async filterByDate(req: Request, res: Response) {
+    try {
+      const user_id = Number(req.query.user_id);
+      const type = String(req.query.type) as 'day' | 'week' | 'month';
+      const date = req.query.date ? new Date(String(req.query.date)) : new Date();
+      const data = await MoneyService.filterByDate({ user_id, type, date });
+      res.status(200).json({ success: true, data });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
 
   // =========================
   // GET ALL
